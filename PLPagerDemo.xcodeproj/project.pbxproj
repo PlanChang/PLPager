@@ -13,6 +13,7 @@
 		44FD23B9214A6B2B00DB431A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44FD23B8214A6B2B00DB431A /* Assets.xcassets */; };
 		44FD23BC214A6B2B00DB431A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44FD23BA214A6B2B00DB431A /* LaunchScreen.storyboard */; };
 		44FD23BF214A6B2B00DB431A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FD23BE214A6B2B00DB431A /* main.m */; };
+		44FD23C8214A6C3600DB431A /* PLPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FD23C7214A6C3600DB431A /* PLPagerViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		44FD23BB214A6B2B00DB431A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		44FD23BD214A6B2B00DB431A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44FD23BE214A6B2B00DB431A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		44FD23C6214A6C3600DB431A /* PLPagerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLPagerViewController.h; sourceTree = "<group>"; };
+		44FD23C7214A6C3600DB431A /* PLPagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PLPagerViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +45,7 @@
 		44FD23A3214A6B2900DB431A = {
 			isa = PBXGroup;
 			children = (
+				44FD23C5214A6C1800DB431A /* PLPager */,
 				44FD23AE214A6B2900DB431A /* PLPagerDemo */,
 				44FD23AD214A6B2900DB431A /* Products */,
 			);
@@ -69,6 +73,15 @@
 				44FD23BE214A6B2B00DB431A /* main.m */,
 			);
 			path = PLPagerDemo;
+			sourceTree = "<group>";
+		};
+		44FD23C5214A6C1800DB431A /* PLPager */ = {
+			isa = PBXGroup;
+			children = (
+				44FD23C6214A6C3600DB431A /* PLPagerViewController.h */,
+				44FD23C7214A6C3600DB431A /* PLPagerViewController.m */,
+			);
+			path = PLPager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44FD23C8214A6C3600DB431A /* PLPagerViewController.m in Sources */,
 				44FD23B4214A6B2900DB431A /* ViewController.m in Sources */,
 				44FD23BF214A6B2B00DB431A /* main.m in Sources */,
 				44FD23B1214A6B2900DB431A /* AppDelegate.m in Sources */,
