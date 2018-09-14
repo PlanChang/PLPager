@@ -11,7 +11,18 @@
 @class PLPagerViewController;
 
 @protocol PLPagerViewControllerDelegate <NSObject>
-- (void)pagerViewController:(PLPagerViewController *)controller didSelectedChildViewControllerAtIndex:(NSInteger)index;
+
+- (void)pagerViewController:(PLPagerViewController *)controller
+          movedFromIndex:(NSInteger)fromIndex
+                           toIndex:(NSInteger)toIndex;
+
+- (void)pagerViewController:(PLPagerViewController *)controller
+          movingFromIndex:(NSInteger)fromIndex
+                           toIndex:(NSInteger)toIndex
+                          progress:(CGFloat)progress
+           indexWasChanged:(BOOL)indexWasChanged;
+
+
 @end
 
 
@@ -26,7 +37,7 @@
 
 @interface PLPagerViewController : UIViewController <PLPagerViewControllerDataSource>
 
-@property (readonly) NSArray *pagerChildViewControllers;
+@property (nonatomic,copy) NSArray *pagerChildViewControllers;
 @property (nonatomic, strong) UIScrollView *containerView;
 @property (nonatomic, weak) id <PLPagerViewControllerDelegate>delegate;
 @property (nonatomic, weak) id <PLPagerViewControllerDataSource>dataSource;
