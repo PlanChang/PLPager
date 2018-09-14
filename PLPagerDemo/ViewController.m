@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "PLPagerViewController.h"
+#import "PagerViewController.h"
 
 @interface ViewController () <UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic) UITableView *tableView;
@@ -39,7 +39,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    PLPagerViewController *vc = [[PLPagerViewController alloc] init];
+    PagerViewController *vc = [[PagerViewController alloc] init];
     [self.navigationController pushViewController:vc animated:YES];
     
 }

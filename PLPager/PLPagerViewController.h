@@ -43,8 +43,7 @@
 @property (nonatomic, weak) id <PLPagerViewControllerDataSource>dataSource;
 
 @property (readonly) NSUInteger currentIndex;
-@property BOOL skipIntermediateViewControllers;
-@property BOOL isProgressiveIndicator;
+
 @property BOOL isElasticIndicatorLimit;
 
 -(void)moveToViewControllerAtIndex:(NSUInteger)index animated:(BOOL)animated;

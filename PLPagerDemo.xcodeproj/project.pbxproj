@@ -15,6 +15,7 @@
 		44FD23BF214A6B2B00DB431A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FD23BE214A6B2B00DB431A /* main.m */; };
 		44FD23C8214A6C3600DB431A /* PLPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FD23C7214A6C3600DB431A /* PLPagerViewController.m */; };
 		44FD23CE214B73EF00DB431A /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FD23CD214B73EF00DB431A /* ContentViewController.m */; };
+		44FD23D1214BAED700DB431A /* PagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FD23D0214BAED700DB431A /* PagerViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		44FD23C7214A6C3600DB431A /* PLPagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PLPagerViewController.m; sourceTree = "<group>"; };
 		44FD23CC214B73EF00DB431A /* ContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentViewController.h; sourceTree = "<group>"; };
 		44FD23CD214B73EF00DB431A /* ContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentViewController.m; sourceTree = "<group>"; };
+		44FD23CF214BAED700DB431A /* PagerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PagerViewController.h; sourceTree = "<group>"; };
+		44FD23D0214BAED700DB431A /* PagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PagerViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +96,8 @@
 			children = (
 				44FD23CC214B73EF00DB431A /* ContentViewController.h */,
 				44FD23CD214B73EF00DB431A /* ContentViewController.m */,
+				44FD23CF214BAED700DB431A /* PagerViewController.h */,
+				44FD23D0214BAED700DB431A /* PagerViewController.m */,
 			);
 			path = PagerContentViewController;
 			sourceTree = "<group>";
@@ -171,6 +176,7 @@
 				44FD23CE214B73EF00DB431A /* ContentViewController.m in Sources */,
 				44FD23B4214A6B2900DB431A /* ViewController.m in Sources */,
 				44FD23BF214A6B2B00DB431A /* main.m in Sources */,
+				44FD23D1214BAED700DB431A /* PagerViewController.m in Sources */,
 				44FD23B1214A6B2900DB431A /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

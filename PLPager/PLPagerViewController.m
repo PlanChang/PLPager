@@ -18,9 +18,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 @interface PLPagerViewController () <UIScrollViewDelegate,PLPagerViewControllerDelegate>
 @property (nonatomic,copy) NSArray *childViewControllersForSkip;
 @property (nonatomic) NSUInteger currentIndex;
-
-@property (nonatomic) UISegmentedControl *segmentControl;
-
 @end
 
 @implementation PLPagerViewController
@@ -45,15 +42,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self initContainerView];
     
-    [self updateContentForContainerView];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self moveToViewControllerAtIndex:5 animated:YES];
-    });
-    
-    [self.view addSubview:self.segmentControl];
-    self.segmentControl.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 30);
-    
+    [self updateContentForContainerView];    
 }
 
 - (void)initContainerView
@@ -75,7 +64,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     self.currentIndex = 0;
     self.dataSource = self;
     self.delegate = self;
-    self.skipIntermediateViewControllers = YES;
 }
 
 - (void)updateContentForContainerView
@@ -112,7 +100,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     self.currentIndex = newCurrentIndex;
     BOOL changeCurrentIndex = newCurrentIndex != lastIndex;
     
-    if (changeCurrentIndex) {
+    if (changeCurrentIndex && !self.containerView) {
         if ([self.delegate respondsToSelector:@selector(pagerViewController:movedFromIndex:toIndex:)]) {
             [self.delegate pagerViewController:self movedFromIndex:MIN(lastIndex,[self numberOfChildViewControllers]-1) toIndex:newCurrentIndex];
         }
@@ -188,7 +176,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     if (!self.isViewLoaded || !self.view.window) {
         self.currentIndex = index;
     } else {
-        if (animated && self.skipIntermediateViewControllers && ABS(self.currentIndex - index) > 1){
+        if (animated  && ABS(self.currentIndex - index) > 1){
             NSMutableArray * tempChildViewControllers = [NSMutableArray arrayWithArray:self.pagerChildViewControllers];
             UIViewController *currentChildVC = [self.pagerChildViewControllers objectAtIndex:self.currentIndex];
             NSUInteger fromIndex = (self.currentIndex < index) ? index - 1 : index + 1;
@@ -196,7 +184,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
             [tempChildViewControllers setObject:fromChildVC atIndexedSubscript:self.currentIndex];
             [tempChildViewControllers setObject:currentChildVC atIndexedSubscript:fromIndex];
             self.childViewControllersForSkip = tempChildViewControllers;
-            
+            self.currentIndex = fromIndex;
             [self.containerView setContentOffset:[self offsetWithIndex:fromIndex] animated:NO];
             if (self.navigationController){
                 self.navigationController.view.userInteractionEnabled = NO;
@@ -219,38 +207,28 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 
 - (NSArray *)childViewControllersForPagerViewController:(PLPagerViewController *)controller
 {
-    NSMutableArray *array = @[].mutableCopy;
-    
-    for (int i = 0; i < 20; i++) {
-        ContentViewController *vc = [[ContentViewController alloc] init];
-        vc.index = i;
-        [array addObject:vc];
-    }
-    
-    return array;
+    return nil;
 }
 
 #pragma mark - Delegate
 
--(void)pagerViewController:(PLPagerViewController *)controller
+- (void)pagerViewController:(PLPagerViewController *)controller
             movedFromIndex:(NSInteger)fromIndex
                    toIndex:(NSInteger)toIndex
 {
-//    NSLog(@"moved fromIndex:%ld toIndex:%ld",fromIndex,toIndex);
 }
 
--(void)pagerViewController:(PLPagerViewController *)controller
+- (void)pagerViewController:(PLPagerViewController *)controller
            movingFromIndex:(NSInteger)fromIndex
                    toIndex:(NSInteger)toIndex
                   progress:(CGFloat)progress
            indexWasChanged:(BOOL)indexWasChanged
 {
-    NSLog(@"moving fromIndex:%ld toIndex:%ld progress : %f changed:%@",fromIndex,toIndex,progress,indexWasChanged?@"YES":@"NO");
 }
 
 #pragma mark - UIScrollViewDelegte
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (self.containerView == scrollView){
         [self updateContentForContainerView];
@@ -258,7 +236,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 }
 
 
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     if (self.containerView == scrollView) {
         _lastPageNumber = [self indexWithOffset:self.containerView.contentOffset.x];
@@ -266,7 +244,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     }
 }
 
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
 {
     if (self.containerView == scrollView && _childViewControllersForSkip){
         self.childViewControllersForSkip = nil;
@@ -315,13 +293,13 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     return CGRectGetHeight(self.containerView.bounds);
 }
 
--(NSInteger)virtualPageForContentOffset:(CGFloat)contentOffset
+- (NSInteger)virtualPageForContentOffset:(CGFloat)contentOffset
 {
     NSInteger result = (contentOffset + (1.5f * [self pageWidth])) / [self pageWidth];
     return result - 1;
 }
 
--(NSUInteger)pageForVirtualPage:(NSInteger)virtualPage
+- (NSUInteger)pageForVirtualPage:(NSInteger)virtualPage
 {
     if (virtualPage < 0){
         return 0;
@@ -379,22 +357,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     return 1 - fmodf(self.containerView.contentOffset.x >= 0 ? self.containerView.contentOffset.x : [self pageWidth] + self.containerView.contentOffset.x, [self pageWidth]) / [self pageWidth];
 }
 
-- (void)segmentControlValueChange:(UISegmentedControl *)control
-{
-    [self moveToViewControllerAtIndex:control.selectedSegmentIndex animated:YES];
-}
-- (UISegmentedControl *)segmentControl
-{
-    if (!_segmentControl) {
-        _segmentControl = [[UISegmentedControl alloc] init];
-        [_segmentControl addTarget:self action:@selector(segmentControlValueChange:) forControlEvents:UIControlEventValueChanged];
-        
-        for (int i =0;i<20;i++) {
-            [_segmentControl insertSegmentWithTitle:[NSString stringWithFormat:@"%d",i] atIndex:i animated:YES];
-        }
-    }
-    return _segmentControl;
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
