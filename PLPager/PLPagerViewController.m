@@ -90,6 +90,8 @@
     NSLog(@"curr index = %ld",self.currentIndex);
 }
 
+#pragma mark - API
+
 - (void)reloadPagerView
 {
     if ([self isViewLoaded]){
@@ -109,6 +111,38 @@
         [self.containerView setContentOffset:[self offsetWithIndex:self.currentIndex]  animated:NO];
         [self updateContentForContainerView];
     }
+}
+
+- (void)moveToViewControllerAtIndex:(NSUInteger)index animated:(BOOL)animated
+{
+    if (!self.isViewLoaded || !self.view.window) {
+        self.currentIndex = index;
+    } else {
+        if (animated && self.skipIntermediateViewControllers && ABS(self.currentIndex - index) > 1){
+            NSMutableArray * tempChildViewControllers = [NSMutableArray arrayWithArray:self.pagerChildViewControllers];
+            UIViewController *currentChildVC = [self.pagerChildViewControllers objectAtIndex:self.currentIndex];
+            NSUInteger fromIndex = (self.currentIndex < index) ? index - 1 : index + 1;
+            UIViewController *fromChildVC = [self.pagerChildViewControllers objectAtIndex:fromIndex];
+            [tempChildViewControllers setObject:fromChildVC atIndexedSubscript:self.currentIndex];
+            [tempChildViewControllers setObject:currentChildVC atIndexedSubscript:fromIndex];
+            
+            [self.containerView setContentOffset:[self offsetWithIndex:fromIndex] animated:NO];
+            if (self.navigationController){
+                self.navigationController.view.userInteractionEnabled = NO;
+            }
+            else{
+                self.view.userInteractionEnabled = NO;
+            }
+            [self.containerView setContentOffset:[self offsetWithIndex:index] animated:YES];
+        }
+        else{
+            [self.containerView setContentOffset:[self offsetWithIndex:index] animated:animated];
+        }
+    }
+}
+- (void)moveToViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [self moveToViewControllerAtIndex:[self.pagerChildViewControllers indexOfObject:viewController] animated:animated];
 }
 
 #pragma mark - DataSource
@@ -225,8 +259,6 @@
     }
     return nil;
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
