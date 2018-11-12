@@ -273,6 +273,9 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
         _containerView.showsVerticalScrollIndicator = NO;
         _containerView.showsHorizontalScrollIndicator = NO;
         _containerView.pagingEnabled = YES;
+        if (@available(iOS 11.0, *)) {
+            _containerView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return _containerView;
 }

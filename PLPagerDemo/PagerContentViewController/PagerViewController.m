@@ -60,7 +60,7 @@
             movedFromIndex:(NSInteger)fromIndex
                    toIndex:(NSInteger)toIndex
 {
-        NSLog(@"moved fromIndex:%ld toIndex:%ld",fromIndex,toIndex);
+    NSLog(@"moved fromIndex:%ld toIndex:%ld",fromIndex,toIndex);
     [self.segmentControl setSelectedSegmentIndex:toIndex];
 }
 
