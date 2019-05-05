@@ -1,2 +1,0 @@
-# PLPager
-Like UIPagerViewController
