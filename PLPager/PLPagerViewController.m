@@ -201,29 +201,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     [self moveToViewControllerAtIndex:[self.pagerChildViewControllers indexOfObject:viewController] animated:animated];
 }
 
-#pragma mark - DataSource
-
-- (NSArray *)childViewControllersForPagerViewController:(PLPagerViewController *)controller
-{
-    return nil;
-}
-
-#pragma mark - Delegate
-
-- (void)pagerViewController:(PLPagerViewController *)controller
-            movedFromIndex:(NSInteger)fromIndex
-                   toIndex:(NSInteger)toIndex
-{
-}
-
-- (void)pagerViewController:(PLPagerViewController *)controller
-           movingFromIndex:(NSInteger)fromIndex
-                   toIndex:(NSInteger)toIndex
-                  progress:(CGFloat)progress
-           indexWasChanged:(BOOL)indexWasChanged
-{
-}
-
 #pragma mark - UIScrollViewDelegte
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
