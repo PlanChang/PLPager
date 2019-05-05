@@ -11,7 +11,6 @@
 
 @interface PagerViewController () <PLPagerViewControllerDelegate,PLPagerViewControllerDataSource>
 @property (nonatomic) UISegmentedControl *segmentControl;
-
 @property (nonatomic) UIView *markView;
 @end
 
@@ -19,7 +18,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self initSubviews];
+}
+
+#pragma mark - UI
+
+- (void)initSubviews
+{
     [self.view addSubview:self.segmentControl];
     self.segmentControl.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds)+3, 30);
     CGFloat markWidth = CGRectGetWidth(self.view.bounds) / 20;
@@ -29,11 +34,58 @@
     self.containerView.frame = CGRectMake(0, 30, self.view.bounds.size.width, self.view.bounds.size.height-30);
 }
 
+#pragma mark - SegmentControl Action
 
 - (void)segmentControlValueChange:(UISegmentedControl *)control
 {
     [self moveToViewControllerAtIndex:control.selectedSegmentIndex animated:YES];
 }
+
+#pragma mark - PLPagerViewControllerDelegate
+
+- (void)pagerViewController:(PLPagerViewController *)controller
+             movedFromIndex:(NSInteger)fromIndex
+                    toIndex:(NSInteger)toIndex
+{
+    NSLog(@"moved fromIndex:%ld toIndex:%ld",fromIndex,toIndex);
+    [self.segmentControl setSelectedSegmentIndex:toIndex];
+}
+
+- (void)pagerViewController:(PLPagerViewController *)controller
+            movingFromIndex:(NSInteger)fromIndex
+                    toIndex:(NSInteger)toIndex
+                   progress:(CGFloat)progress
+            indexWasChanged:(BOOL)indexWasChanged
+{
+    if (indexWasChanged) {
+        [self.segmentControl setSelectedSegmentIndex:toIndex];
+    }
+    
+    CGRect rect = self.markView.frame;
+    CGFloat markWidth = CGRectGetWidth(self.view.bounds) / 20.0;
+    CGFloat fromOffset = CGRectGetMinX(self.markView.frame);
+    CGFloat toOffset = markWidth * toIndex;
+    rect.origin.x = fromOffset + (toOffset - fromOffset) * progress;
+    self.markView.frame = rect;
+}
+
+#pragma mark - PLPagerViewControllerDataSource
+
+- (NSArray *)childViewControllersForPagerViewController:(PLPagerViewController *)controller
+{
+    NSMutableArray *array = @[].mutableCopy;
+    
+    for (int i = 0; i < 20; i++) {
+        ContentViewController *vc = [[ContentViewController alloc] init];
+        vc.index = i;
+        [array addObject:vc];
+    }
+    
+    return array;
+}
+
+#pragma mark - Lazy init
+
 - (UISegmentedControl *)segmentControl
 {
     if (!_segmentControl) {
@@ -54,54 +106,6 @@
         _markView.backgroundColor = [UIColor blackColor];
     }
     return _markView;
-}
-
-#pragma mark - PLPagerViewControllerDelegate
-
-- (void)pagerViewController:(PLPagerViewController *)controller
-            movedFromIndex:(NSInteger)fromIndex
-                   toIndex:(NSInteger)toIndex
-{
-    NSLog(@"moved fromIndex:%ld toIndex:%ld",fromIndex,toIndex);
-    [self.segmentControl setSelectedSegmentIndex:toIndex];
-}
-
-- (void)pagerViewController:(PLPagerViewController *)controller
-           movingFromIndex:(NSInteger)fromIndex
-                   toIndex:(NSInteger)toIndex
-                  progress:(CGFloat)progress
-           indexWasChanged:(BOOL)indexWasChanged
-{
-
-    if (indexWasChanged) {
-        [self.segmentControl setSelectedSegmentIndex:toIndex];
-    }
-    
-    CGRect rect = self.markView.frame;
-    CGFloat markWidth = CGRectGetWidth(self.view.bounds) / 20.0;
-    
-    CGFloat fromOffset = CGRectGetMinX(self.markView.frame);
-    CGFloat toOffset = markWidth * toIndex;
-    
-    rect.origin.x = fromOffset + (toOffset - fromOffset) * progress;
-    
-    self.markView.frame = rect;
-    
-}
-
-#pragma mark - PLPagerViewControllerDataSource
-
-- (NSArray *)childViewControllersForPagerViewController:(PLPagerViewController *)controller
-{
-    NSMutableArray *array = @[].mutableCopy;
-    
-    for (int i = 0; i < 20; i++) {
-        ContentViewController *vc = [[ContentViewController alloc] init];
-        vc.index = i;
-        [array addObject:vc];
-    }
-    
-    return array;
 }
 
 - (void)didReceiveMemoryWarning {
