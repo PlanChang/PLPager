@@ -184,7 +184,8 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
         self.currentIndex = index;
     } else {
         if (self.pagerChildViewControllers.count == 0) return;
-        if (animated  && ABS(self.currentIndex - index) > 1){
+        
+        if (animated && ABS(self.currentIndex - index) > 1) {
             NSMutableArray * tempChildViewControllers = [NSMutableArray arrayWithArray:self.pagerChildViewControllers];
             UIViewController *currentChildVC = [self.pagerChildViewControllers objectAtIndex:self.currentIndex];
             NSUInteger fromIndex = (self.currentIndex < index) ? index - 1 : index + 1;
@@ -199,10 +200,9 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
             } else {
                 self.view.userInteractionEnabled = NO;
             }
-            [self.containerView setContentOffset:[self offsetWithIndex:index] animated:YES];
-        } else{
-            [self.containerView setContentOffset:[self offsetWithIndex:index] animated:animated];
         }
+        _lastContentOffset = self.containerView.contentOffset.x;
+        [self.containerView setContentOffset:[self offsetWithIndex:index] animated:animated];
     }
 }
 
