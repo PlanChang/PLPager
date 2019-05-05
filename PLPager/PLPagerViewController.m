@@ -14,7 +14,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     PLPagerScrollDirectionRight
 };
 
-@interface PLPagerViewController () <UIScrollViewDelegate,PLPagerViewControllerDelegate>
+@interface PLPagerViewController () <UIScrollViewDelegate>
 @property (nonatomic,copy) NSArray *childViewControllersForSkip;
 @property (nonatomic) NSUInteger currentIndex;
 @end
@@ -40,7 +40,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     self.view.backgroundColor = [UIColor whiteColor];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self initContainerView];
-    
     [self updateContentForContainerView];    
 }
 
@@ -61,8 +60,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 - (void)defaultConfiguration
 {
     self.currentIndex = 0;
-    self.dataSource = self;
-    self.delegate = self;
 }
 
 - (void)updateContentForContainerView
@@ -148,6 +145,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 
 #pragma mark - API
 
+///刷新
 - (void)reloadPagerView
 {
     if ([self isViewLoaded]){
@@ -169,11 +167,20 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     }
 }
 
+///移动到指定的试图控制器页面
+- (void)moveToViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if (self.pagerChildViewControllers.count == 0) return;
+    [self moveToViewControllerAtIndex:[self.pagerChildViewControllers indexOfObject:viewController] animated:animated];
+}
+
+///移动到指定索引的页面
 - (void)moveToViewControllerAtIndex:(NSUInteger)index animated:(BOOL)animated
 {
     if (!self.isViewLoaded || !self.view.window) {
         self.currentIndex = index;
     } else {
+        if (self.pagerChildViewControllers.count == 0) return;
         if (animated  && ABS(self.currentIndex - index) > 1){
             NSMutableArray * tempChildViewControllers = [NSMutableArray arrayWithArray:self.pagerChildViewControllers];
             UIViewController *currentChildVC = [self.pagerChildViewControllers objectAtIndex:self.currentIndex];
@@ -196,10 +203,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
         }
     }
 }
-- (void)moveToViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    [self moveToViewControllerAtIndex:[self.pagerChildViewControllers indexOfObject:viewController] animated:animated];
-}
 
 #pragma mark - UIScrollViewDelegte
 
@@ -209,7 +212,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
         [self updateContentForContainerView];
     }
 }
-
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
@@ -304,6 +306,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 {
     return self.pagerChildViewControllers.count;
 }
+
 - (UIViewController *)childViewControllerAtIndex:(NSInteger)index
 {
     if (index < [self currChildViewControllers].count) {

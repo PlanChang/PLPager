@@ -18,6 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.delegate = self;
+    self.dataSource = self;
     [self initSubviews];
 }
 
@@ -44,19 +46,12 @@
 #pragma mark - PLPagerViewControllerDelegate
 
 - (void)pagerViewController:(PLPagerViewController *)controller
-             movedFromIndex:(NSInteger)fromIndex
-                    toIndex:(NSInteger)toIndex
-{
-    NSLog(@"moved fromIndex:%ld toIndex:%ld",fromIndex,toIndex);
-    [self.segmentControl setSelectedSegmentIndex:toIndex];
-}
-
-- (void)pagerViewController:(PLPagerViewController *)controller
             movingFromIndex:(NSInteger)fromIndex
                     toIndex:(NSInteger)toIndex
                    progress:(CGFloat)progress
             indexWasChanged:(BOOL)indexWasChanged
 {
+    NSLog(@"movingFromIndex:%d toIndex:%d progress:%f indexWasChanged:%@",fromIndex,toIndex,progress,indexWasChanged?@"YES":@"NO");
     if (indexWasChanged) {
         [self.segmentControl setSelectedSegmentIndex:toIndex];
     }
@@ -111,4 +106,5 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
 @end
