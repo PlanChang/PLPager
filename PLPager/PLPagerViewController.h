@@ -27,16 +27,19 @@
 
 @interface PLPagerViewController : UIViewController
 
-@property (nonatomic, copy) NSArray *pagerChildViewControllers;
-@property (nonatomic, strong) UIScrollView *containerView;
+@property (nonatomic, readonly) NSArray *pagerChildViewControllers;
+@property (nonatomic, readonly) UIScrollView *containerView;
 @property (nonatomic, weak) id <PLPagerViewControllerDelegate>delegate;
 @property (nonatomic, weak) id <PLPagerViewControllerDataSource>dataSource;
 @property (nonatomic, readonly) NSUInteger currentIndex;
-@property BOOL isElasticIndicatorLimit;
+@property (nonatomic, assign) BOOL isElasticIndicatorLimit;
 
+///移动到指定索引的页面
 -(void)moveToViewControllerAtIndex:(NSUInteger)index animated:(BOOL)animated;
+///移动到指定视图控制器的页面
 -(void)moveToViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
+///刷新
 -(void)reloadPagerView;
 
 /*

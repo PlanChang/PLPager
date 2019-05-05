@@ -15,8 +15,10 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 };
 
 @interface PLPagerViewController () <UIScrollViewDelegate>
-@property (nonatomic,copy) NSArray *childViewControllersForSkip;
-@property (nonatomic) NSUInteger currentIndex;
+@property (nonatomic, strong) UIScrollView *containerView;
+@property (nonatomic, copy) NSArray *pagerChildViewControllers;
+@property (nonatomic, copy) NSArray *childViewControllersForSkip;
+@property (nonatomic, assign) NSUInteger currentIndex;
 @end
 
 @implementation PLPagerViewController

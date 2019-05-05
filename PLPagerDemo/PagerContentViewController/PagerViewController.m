@@ -21,6 +21,7 @@
     self.delegate = self;
     self.dataSource = self;
     [self initSubviews];
+    [self reloadPagerView];
 }
 
 #pragma mark - UI
