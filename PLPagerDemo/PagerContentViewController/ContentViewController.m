@@ -26,7 +26,6 @@
     label.frame = CGRectMake(100, 100, 100, 100);
     
     self.label = label;
-    NSLog(@"viewDidLoad");
     
     NSInteger type = self.index%5;
     switch (type) {

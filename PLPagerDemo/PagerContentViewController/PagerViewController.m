@@ -46,6 +46,11 @@
 
 #pragma mark - PLPagerViewControllerDelegate
 
+- (void)pagerViewController:(PLPagerViewController *)controller movedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex
+{
+    NSLog(@"movingFromIndex:%d toIndex:%d",fromIndex,toIndex);
+}
+
 - (void)pagerViewController:(PLPagerViewController *)controller
             movingFromIndex:(NSInteger)fromIndex
                     toIndex:(NSInteger)toIndex

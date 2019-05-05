@@ -48,10 +48,8 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 - (void)initContainerView
 {
     self.containerView.frame = self.view.bounds;
-    
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.containerView];
-    
     if (self.dataSource){
         self.pagerChildViewControllers = [self.dataSource childViewControllersForPagerViewController:self];
     }
@@ -79,10 +77,8 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     if (![[childViewController presentationController] isEqual:self]) {
         [self addChildViewController:childViewController];
         [childViewController didMoveToParentViewController:self];
-        
         childViewController.view.frame = CGRectMake(offset.x, 0, CGRectGetWidth(self.containerView.bounds), CGRectGetHeight(self.containerView.bounds));
         childViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        
         [childViewController beginAppearanceTransition:YES animated:YES];
         [self.containerView addSubview:childViewController.view];
         [childViewController endAppearanceTransition];
@@ -98,40 +94,43 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     self.currentIndex = newCurrentIndex;
     BOOL changeCurrentIndex = newCurrentIndex != lastIndex;
     
-    if (changeCurrentIndex && !self.containerView) {
+    if (changeCurrentIndex) {
         if ([self.delegate respondsToSelector:@selector(pagerViewController:movedFromIndex:toIndex:)]) {
-            [self.delegate pagerViewController:self movedFromIndex:MIN(lastIndex,[self numberOfChildViewControllers]-1) toIndex:newCurrentIndex];
+            [self.delegate pagerViewController:self movedFromIndex:MIN(lastIndex,[self numberOfChildViewControllers] - 1) toIndex:newCurrentIndex];
         }
     }
     
     if ([self.delegate respondsToSelector:@selector(pagerViewController:movingFromIndex:toIndex:progress:indexWasChanged:)]) {
-        
+        //滑动比例
         CGFloat scrollPercentage = [self scrollPercentage];
-        if (scrollPercentage > 0) {
+        //有效的滑动范围
+        CGPoint scrollOffset = self.containerView.contentOffset;
+        CGPoint lastPagerOffset = [self offsetWithIndex:[self numberOfChildViewControllers]-1];
+        BOOL validScrollBounds = scrollOffset.x >= 0.0 && scrollOffset.x <= lastPagerOffset.x;
+        if (scrollPercentage > 0 && validScrollBounds) {
             NSInteger fromIndex = self.currentIndex;
             NSInteger toIndex = self.currentIndex;
             PLPagerScrollDirection scrollDirection = [self scrollDirection];
-            if (scrollDirection == PLPagerScrollDirectionRight){
-                
+            //活动方向：当前是向左👈滑动
+            if (scrollDirection == PLPagerScrollDirectionLeft) {
                 if (virtualPage > [self numberOfChildViewControllers] - 1) {
                     fromIndex = [self numberOfChildViewControllers] - 1;
                     toIndex = [self numberOfChildViewControllers];
                 } else {
-                    if (scrollPercentage >= 0.5f){
+                    if (scrollPercentage >= 0.5f) {
                         fromIndex = MAX(toIndex - 1, 0);
                     } else {
                         toIndex = fromIndex + 1;
                     }
                 }
-                
-            } else if (scrollDirection == PLPagerScrollDirectionRight) {
-                
-                if (virtualPage < 0){
+            }
+            //活动方向：当前是向右👉滑动
+            else if (scrollDirection == PLPagerScrollDirectionRight) {
+                if (virtualPage < 0) {
                     fromIndex = 0;
                     toIndex = -1;
-                    
                 }  else {
-                    if (scrollPercentage > 0.5f){
+                    if (scrollPercentage > 0.5f) {
                         fromIndex = MIN(toIndex + 1, [self numberOfChildViewControllers] - 1);
                     }
                     else{
@@ -139,7 +138,9 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
                     }
                 }
             }
-            CGFloat progress = (self.isElasticIndicatorLimit ? scrollPercentage : ( toIndex < 0 || toIndex >= [self numberOfChildViewControllers] ? 0 : scrollPercentage ));
+            
+            CGFloat progress = scrollPercentage;
+            changeCurrentIndex = progress > 0.5;
             [self.delegate pagerViewController:self movingFromIndex:fromIndex toIndex:toIndex progress:progress indexWasChanged:changeCurrentIndex];
         }
     }
@@ -199,8 +200,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
                 self.view.userInteractionEnabled = NO;
             }
             [self.containerView setContentOffset:[self offsetWithIndex:index] animated:YES];
-        }
-        else{
+        } else{
             [self.containerView setContentOffset:[self offsetWithIndex:index] animated:animated];
         }
     }
@@ -318,7 +318,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 }
 
 // move
--(PLPagerScrollDirection)scrollDirection
+- (PLPagerScrollDirection)scrollDirection
 {
     if (self.containerView.contentOffset.x > _lastContentOffset){
         return PLPagerScrollDirectionLeft;
@@ -329,7 +329,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     return PLPagerScrollDirectionNone;
 }
 
--(CGFloat)scrollPercentage
+- (CGFloat)scrollPercentage
 {
     if ([self scrollDirection] == PLPagerScrollDirectionLeft || [self scrollDirection] == PLPagerScrollDirectionNone){
         if (fmodf(self.containerView.contentOffset.x, [self pageWidth]) == 0.0) {
