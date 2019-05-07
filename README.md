@@ -32,9 +32,14 @@ PLPagerViewController *vc = [[PLPagerViewController alloc] initWithIndex:n]
 * 代理方法
 ```
 ///pager自某一页面滑动到另一个页面：仅在滑动比例超过0.5时调用一次
--(void)pagerViewController:(PLPagerViewController *)controller movedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
-
+-(void)pagerViewController:(PLPagerViewController *)controller 
+movedFromIndex:(NSInteger)fromIndex 
+toIndex:(NSInteger)toIndex;
 ///pager自某一页面滑动到另一个页面：多次调用，包含上面的代理方法的功能；增加滑动比例进度，滑动比例超过0.5后indexWasChanged=YES
--(void)pagerViewController:(PLPagerViewController *)controller movingFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex progress:(CGFloat)progress indexWasChanged:(BOOL)indexWasChanged;
+-(void)pagerViewController:(PLPagerViewController *)controller 
+movingFromIndex:(NSInteger)fromIndex 
+toIndex:(NSInteger)toIndex progress:(CGFloat)progress 
+indexWasChanged:(BOOL)indexWasChanged;
+///pager的子视图控制器
 -(NSArray *)childViewControllersForPagerViewController:(PLPagerViewController *)controller;
 ```
