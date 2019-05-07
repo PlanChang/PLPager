@@ -1,9 +1,9 @@
 # PLPager
 - 
 ## 简介： （Intro）
->1.类似UIKit的UIPagerViewController。
->2.便于获取当前滑动开始的页面索引和滑动到的页面以及滑动进度。
->3.每个页面在第一次显示时才加载页面。
+1. 类似UIKit的UIPagerViewController。
+2. 便于获取当前滑动开始的页面索引和滑动到的页面以及滑动进度。
+3. 每个页面在第一次显示时才加载页面。
 -
 ## 版本记录： （Version）
 ### v0.6.0+
