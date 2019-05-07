@@ -27,11 +27,25 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     CGFloat _lastContentOffset;
 }
 
-- (instancetype)init
+- (instancetype)initWithIndex:(NSInteger)defaultIndex
 {
-    self = [super init];
+    self = [self initWithNibName:nil bundle:nil];
     if (self) {
-        [self defaultConfiguration];
+        self.currentIndex = defaultIndex;
+    }
+    return self;
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder]) {
     }
     return self;
 }
@@ -42,7 +56,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     self.view.backgroundColor = [UIColor whiteColor];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self initContainerView];
-    [self updateContentForContainerView];    
+    [self updateContentForContainerView];
 }
 
 - (void)initContainerView
@@ -52,22 +66,19 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     [self.view addSubview:self.containerView];
     if (self.dataSource){
         self.pagerChildViewControllers = [self.dataSource childViewControllersForPagerViewController:self];
+        //更新containerView contentSize
+        CGSize containerContentSize = CGSizeMake([self pageWidth] * [self numberOfChildViewControllers], [self pageHeight]);
+        [self.containerView setContentSize:containerContentSize];
+        if (self.currentIndex > 0) {
+            [self.containerView setContentOffset:[self offsetWithIndex:self.currentIndex]  animated:NO];
+        }
     }
 }
 
 #pragma mark - Setup
 
-- (void)defaultConfiguration
-{
-    self.currentIndex = 0;
-}
-
 - (void)updateContentForContainerView
 {
-    //更新containerView contentSize
-    CGSize containerContentSize = CGSizeMake([self pageWidth] * [self numberOfChildViewControllers], [self pageHeight]);
-    [self.containerView setContentSize:containerContentSize];
-    
     //添加childViewController
     UIViewController *childViewController = [self childViewControllerAtIndex:self.currentIndex];
     if (!childViewController) {
@@ -160,10 +171,14 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
                 [childController removeFromParentViewController];
             }
         }];
+        
         self.pagerChildViewControllers = self.dataSource ? [self.dataSource childViewControllersForPagerViewController:self] : @[];
-        self.containerView.contentSize = CGSizeMake([self pageWidth] * [self numberOfChildViewControllers], self.containerView.contentSize.height);
-        if (self.currentIndex >= [self numberOfChildViewControllers]){
-            self.currentIndex = [self numberOfChildViewControllers] - 1;
+        
+        NSInteger numberOfPage = [self numberOfChildViewControllers];
+        self.containerView.contentSize = CGSizeMake([self pageWidth] * numberOfPage, self.containerView.contentSize.height);
+        
+        if (numberOfPage > 0 && self.currentIndex >= numberOfPage) {
+            self.currentIndex = numberOfPage - 1;
         }
         [self.containerView setContentOffset:[self offsetWithIndex:self.currentIndex]  animated:NO];
         [self updateContentForContainerView];
@@ -210,7 +225,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (self.containerView == scrollView){
+    if (self.containerView == scrollView) {
         [self updateContentForContainerView];
     }
 }
@@ -270,6 +285,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 {
     return CGRectGetWidth(self.containerView.bounds);
 }
+
 - (CGFloat)pageHeight
 {
     return CGRectGetHeight(self.containerView.bounds);
@@ -292,11 +308,13 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     return virtualPage;
 }
 
-//获取 页码 或 位移
+// 获取 页码 或 位移
 - (CGPoint)offsetWithIndex:(NSInteger)index
 {
+    index = MAX(0, index);
     return CGPointMake([self pageWidth] * index, 0);
 }
+
 - (NSInteger)indexWithOffset:(CGFloat)offset
 {
     return offset / [self pageWidth];

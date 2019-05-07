@@ -34,12 +34,13 @@
 @end
 
 @interface PLPagerViewController : UIViewController
-
 @property (nonatomic, readonly) NSArray *pagerChildViewControllers;
 @property (nonatomic, readonly) UIScrollView *containerView;
+@property (nonatomic, readonly) NSUInteger currentIndex;
 @property (nonatomic, weak) id <PLPagerViewControllerDelegate>delegate;
 @property (nonatomic, weak) id <PLPagerViewControllerDataSource>dataSource;
-@property (nonatomic, readonly) NSUInteger currentIndex;
+
+- (instancetype)initWithIndex:(NSInteger)defaultIndex;
 
 ///移动到指定索引的页面
 -(void)moveToViewControllerAtIndex:(NSUInteger)index animated:(BOOL)animated;
@@ -49,8 +50,10 @@
 -(void)reloadPagerView;
 
 /*
- UIScrollView代理方法：子类如果实现本方法，必须要实现[Super scrollViewDidScroll:scrollView]
+ UIScrollView代理方法：子类可以重写该方法
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView NS_REQUIRES_SUPER;
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView NS_REQUIRES_SUPER;
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView NS_REQUIRES_SUPER;
 
 @end

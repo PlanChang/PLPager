@@ -32,7 +32,6 @@
     self.tableView.frame = self.view.bounds;
 }
 
-
 #pragma mark - tableView delegete
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

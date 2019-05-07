@@ -16,6 +16,15 @@
 
 @implementation PagerViewController
 
+//- (instancetype)init
+//{
+//    self = [super initWithIndex:0];
+//    if (self) {
+//        
+//    }
+//    return self;
+//}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.delegate = self;
@@ -32,7 +41,7 @@
     self.segmentControl.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds)+3, 30);
     CGFloat markWidth = CGRectGetWidth(self.view.bounds) / 20;
     [self.view addSubview:self.markView];
-    self.markView.frame = CGRectMake(0, 35, markWidth, 20);
+    self.markView.frame = CGRectMake(0, 35, markWidth, 2);
     
     self.containerView.frame = CGRectMake(0, 30, self.view.bounds.size.width, self.view.bounds.size.height-30);
 }
