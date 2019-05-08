@@ -67,7 +67,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
     if (self.dataSource){
         self.pagerChildViewControllers = [self.dataSource childViewControllersForPagerViewController:self];
         //更新containerView contentSize
-        CGSize containerContentSize = CGSizeMake([self pageWidth] * [self numberOfChildViewControllers], [self pageHeight]);
+        CGSize containerContentSize = CGSizeMake([self pageWidth] * [self numberOfChildViewControllers], self.containerView.contentSize.height);
         [self.containerView setContentSize:containerContentSize];
         if (self.currentIndex > 0) {
             [self.containerView setContentOffset:[self offsetWithIndex:self.currentIndex]  animated:NO];
@@ -162,7 +162,7 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 ///刷新
 - (void)reloadPagerView
 {
-    if ([self isViewLoaded]){
+    if ([self isViewLoaded]) {
         [self.pagerChildViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             UIViewController * childController = (UIViewController *)obj;
             if ([childController parentViewController]){
@@ -284,11 +284,6 @@ typedef NS_ENUM(NSUInteger, PLPagerScrollDirection) {
 - (CGFloat)pageWidth
 {
     return CGRectGetWidth(self.containerView.bounds);
-}
-
-- (CGFloat)pageHeight
-{
-    return CGRectGetHeight(self.containerView.bounds);
 }
 
 - (NSInteger)virtualPageForContentOffset:(CGFloat)contentOffset
